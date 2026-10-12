@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Descarrega · backup conferido de cartões</title>
-<meta name="description" content="Descarrega é um programa que copia o cartão para um ou dois HDs, confere arquivo por arquivo e ejeta. Como extra, deixa as fotos mais leves para economizar espaço.">
+<meta name="description" content="Descarrega é um programa que copia o cartão para um ou dois HDs, confere arquivo por arquivo e ejeta. Também copia de um HD para outro com a mesma conferência e, como extra, deixa as fotos mais leves para economizar espaço.">
 <meta name="theme-color" content="#0a0a0c">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
@@ -18,17 +18,18 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ff8236' d='M6.5 2H15l4.5 4.5v14A1.5 1.5 0 0 1 18 22H6.5A1.5 1.5 0 0 1 5 20.5v-17A1.5 1.5 0 0 1 6.5 2z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' d='M12.2 11v6.5M9.3 14.8l2.9 2.9 2.9-2.9'/%3E%3C/svg%3E">
 <style>
+@font-face { font-family: "Chivo Mono"; src: url("ChivoMono.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
 :root {
   --pag: #0a0a0c; --linha: #1e1d23; --luz: #f4f4f8; --meio: #8d8c9a; --fraco: #5c5b68; --realce: #6b6a79;
   --bloco: #141318; --bloco-borda: #26252c;
   /* As cores de dentro do programa, no tema escuro dele. */
-  --fundo: #111110; --surface: #1a1a19; --borda: #32322f; --trilho: #2a2a28;
+  --fundo: #151514; --surface: #1d1d1b; --borda: #3a3a36; --trilho: #2b2b28; --barra: #222220;
   --texto: #fff; --texto-2: #c3c2b7; --texto-3: #8a8881;
   --acento: #ff8236; --acento-texto: #1d0f04; --acento-fraco: #3b2110;
   --bom: #35c235; --alerta: #fab219; --critico: #ee6a6a;
   --p0: #4a94ea; --p2: #2fb880; --p3: #c268dc;
   --ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
-  --mono: ui-monospace, Menlo, monospace;
+  --mono: "Chivo Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 70px; }
@@ -56,7 +57,7 @@ button { font: inherit; color: inherit; }
 @media (max-width: 620px) { .nav .rd.so-largo, .nav a.sec { display: none; } }
 
 /* ---------- tipografia ---------- */
-.eyebrow { font-size: 11.5px; letter-spacing: 2.4px; text-transform: uppercase; color: #56555f; margin-bottom: 18px; }
+.eyebrow { font: 500 11px var(--mono); letter-spacing: 2.2px; text-transform: uppercase; color: #56555f; margin-bottom: 18px; }
 h1 { font: 600 clamp(32px, 5.2vw, 58px)/1.08 var(--ui); color: var(--luz); letter-spacing: -1.8px; margin: 30px auto 0; max-width: 21ch; text-wrap: balance; }
 h1 em, h2 em { font-style: normal; color: var(--realce); }
 h2 { font: 600 clamp(24px, 3.2vw, 36px)/1.2 var(--ui); color: var(--luz); letter-spacing: -.9px; margin: 12px 0 0; text-wrap: balance; }
@@ -92,68 +93,92 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
 
 /* ---------- a janela do programa ---------- */
 .palco-box { margin-top: 64px; text-align: left; }
-.win { background: var(--fundo); border: 1px solid #2c2b31; border-radius: 13px; overflow: hidden; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .02); color: var(--texto); font: 13.5px/1.45 var(--ui); }
+.win { background: var(--fundo); border: 1px solid #2c2b31; border-radius: 11px; overflow: hidden; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .02); color: var(--texto); font: 13px/1.45 var(--ui); }
 .tbar { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 13px; background: #1d1d1c; border-bottom: 1px solid var(--borda); position: relative; }
 .tbar i { width: 11px; height: 11px; border-radius: 50%; }
 .tbar .t { position: absolute; left: 0; right: 0; text-align: center; font-size: 12.5px; color: var(--texto-3); pointer-events: none; }
-.apptop { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 9px 18px; background: var(--surface); border-bottom: 1px solid var(--borda); }
-.apptop .logo { display: inline-flex; align-items: center; gap: 7px; font-weight: 650; font-size: 15px; }
-.abas { display: flex; gap: 2px; }
-.abas span { padding: 5px 11px; border-radius: 7px; color: var(--texto-2); font-size: 13px; white-space: nowrap; }
-.abas span.on { background: var(--trilho); color: var(--texto); font-weight: 600; }
-.auto { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--texto-2); }
-.chave { width: 30px; height: 18px; border-radius: 9px; background: var(--acento); position: relative; flex: none; }
-.chave::after { content: ""; position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+.apptop { display: flex; align-items: stretch; gap: 18px; flex-wrap: wrap; padding: 0 16px; min-height: 44px; background: var(--barra); border-bottom: 1px solid var(--borda); }
+.apptop .logo { display: inline-flex; align-items: center; gap: 8px; font: 600 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.abas { display: flex; gap: 2px; align-items: stretch; }
+.abas span { display: inline-flex; align-items: center; padding: 0 12px; border-top: 2px solid transparent; border-bottom: 2px solid transparent; color: var(--texto-2); font: 500 11.5px var(--mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.abas span.on { color: var(--texto); border-bottom-color: var(--acento); }
+/* o painel de opções, com as chaves de liga/desliga */
+.papel { display: block; font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--texto-3); }
+.opcoes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; border: 1px solid var(--borda); border-radius: 6px; overflow: hidden; background: var(--borda); }
+.chave { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface); padding: 9px 12px; min-width: 0; }
+.chave > span:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.chave .papel { color: var(--acento); }
+.chave b { font-weight: 600; font-size: 13px; color: var(--texto); }
+.interruptor { flex: none; position: relative; width: 34px; height: 18px; border: 1px solid var(--acento); border-radius: 3px; background: var(--acento); }
+.interruptor::after { content: ""; position: absolute; top: 2px; left: 16px; width: 14px; height: 12px; border-radius: 2px; background: #fff; }
+.chave.seg { flex-direction: column; align-items: stretch; justify-content: center; gap: 5px; }
+.chave.seg .papel { color: var(--texto-2); }
+.chave.solta { border: 1px solid var(--borda); border-radius: 6px; }
+.segmentos { position: relative; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--borda); border-radius: 4px; overflow: hidden; background: var(--trilho); }
+.segmentos::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 50%; background: var(--acento); transition: transform .28s cubic-bezier(.3, 1.3, .5, 1); }
+.segmentos.segundo::before { transform: translateX(100%); }
+.segmentos > * { position: relative; border: 0; background: none; padding: 3px 6px; font-size: 12px; color: var(--texto-2); white-space: nowrap; text-align: center; transition: color .2s; }
+.segmentos > button { cursor: pointer; }
+.segmentos > .on, .segmentos > [aria-pressed="true"] { color: var(--acento-texto); font-weight: 600; }
+/* os botões de dentro do programa */
+.btn { border: 1px solid var(--borda); background: linear-gradient(var(--surface), #1c1c1a); border-radius: 5px; padding: 6px 12px; font-size: 13px; color: var(--texto); cursor: pointer; transition: border-color .15s; }
+.btn:hover:not(:disabled) { border-color: var(--texto-3); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.primario { background: var(--acento); border-color: var(--acento); color: var(--acento-texto); font-weight: 600; }
+.btn.perigo { color: var(--critico); }
+.btn.perigo.cheio { background: var(--critico); border-color: var(--critico); color: #fff; font-weight: 600; }
+.btn.pq { padding: 4px 9px; font: 500 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; }
 .corpo { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
 .projeto { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .projeto b { font-size: 15px; font-weight: 650; color: var(--texto); }
 .projeto span { color: var(--texto-3); font-size: 12.5px; }
-.rotulos { display: grid; grid-template-columns: minmax(0, 1fr) 190px minmax(0, 1.15fr); gap: 0; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--texto-3); }
+.rotulos { display: grid; grid-template-columns: minmax(0, 1fr) 210px minmax(0, 1.15fr); gap: 0; font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--texto-3); }
 .rotulos span:last-child { grid-column: 3; }
-.palco { display: grid; grid-template-columns: minmax(0, 1fr) 190px minmax(0, 1.15fr); align-items: stretch; }
+.palco { display: grid; grid-template-columns: minmax(0, 1fr) 210px minmax(0, 1.15fr); align-items: stretch; }
 
-.sd { --corte: 38px; background: var(--borda); padding: 1.5px; border-radius: 12px; clip-path: polygon(0 0, calc(100% - var(--corte)) 0, 100% var(--corte), 100% 100%, 0 100%); transition: background .3s, opacity .5s, transform .5s; min-width: 0; }
-.sd .dentro { height: 100%; background: var(--surface); border-radius: 11px; clip-path: polygon(0 0, calc(100% - var(--corte) + 1px) 0, 100% calc(var(--corte) - 1px), 100% 100%, 0 100%); padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sd { --corte: 38px; background: var(--borda); padding: 1.5px; border-radius: 9px; clip-path: polygon(0 0, calc(100% - var(--corte)) 0, 100% var(--corte), 100% 100%, 0 100%); transition: background .3s, opacity .5s, transform .5s; min-width: 0; }
+.sd .dentro { height: 100%; background: var(--surface); border-radius: 8px; clip-path: polygon(0 0, calc(100% - var(--corte) + 1px) 0, 100% calc(var(--corte) - 1px), 100% 100%, 0 100%); padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
 .contatos { display: flex; gap: 5px; padding: 9px 48px 0 2px; }
 .contatos i { width: 13px; height: 22px; border-radius: 2px; background: linear-gradient(#e7c865, #b98f1e); }
 .etiqueta { border-left: 5px solid var(--cor, var(--p0)); padding-left: 10px; display: flex; flex-direction: column; gap: 1px; }
 .nome { font-size: 16px; font-weight: 650; display: block; overflow-wrap: anywhere; }
-.caminho { color: var(--texto-3); font-size: 12px; overflow-wrap: anywhere; }
+.caminho { color: var(--texto-3); font: 400 11px var(--mono); overflow-wrap: anywhere; }
 .nota { color: var(--texto-2); font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .nota.total { font-weight: 600; color: var(--texto); }
+.nota.ja-la { color: var(--acento); }
 .tipos { display: flex; flex-direction: column; gap: 6px; }
 .tipo { display: grid; grid-template-columns: 20px 1fr; gap: 9px; align-items: center; color: var(--acento); }
 .tipo span { color: var(--texto); font-variant-numeric: tabular-nums; }
 .tipo small { color: var(--texto-2); font-size: 12px; }
-.pessoa { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; border-radius: 999px; padding: 2px 10px 2px 8px; font-size: 12.5px; font-weight: 600; background: var(--cor, var(--p0)); color: #fff; }
+.pessoa { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; border-radius: 4px; padding: 2px 10px 2px 8px; font-size: 12.5px; font-weight: 600; background: var(--cor, var(--p0)); color: #fff; }
 .pessoa i { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
 
 .meio { position: relative; display: grid; place-items: center; padding: 0 14px; min-height: 250px; }
 .fios { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--borda); stroke-width: 2; stroke-linecap: round; transition: stroke .3s; }
-.status { position: relative; z-index: 1; width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 7px; text-align: center; min-height: 132px; justify-content: center; }
-.pilula { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 10px; background: var(--trilho); color: var(--texto-2); white-space: nowrap; }
-.pct { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.trilho { width: 100%; height: 6px; border-radius: 3px; background: var(--trilho); overflow: hidden; }
-.trilho i { display: block; height: 100%; width: 0; background: var(--acento); border-radius: 3px; }
+.status { position: relative; z-index: 1; width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 7px; text-align: center; min-height: 132px; justify-content: center; transition: border-color .3s; }
+.pilula { font: 600 10.5px var(--mono); letter-spacing: .06em; text-transform: uppercase; border-radius: 3px; padding: 3px 8px; background: var(--trilho); color: var(--texto-2); text-align: center; }
+.pct { font: 500 26px/1.1 var(--mono); letter-spacing: -.02em; }
+.trilho { width: 100%; height: 6px; border-radius: 2px; background: var(--trilho); overflow: hidden; }
+.trilho i { display: block; height: 100%; width: 0; background: var(--acento); border-radius: 2px; }
 .conta { font-size: 12px; color: var(--texto-2); font-variant-numeric: tabular-nums; }
 .selo { width: 50px; height: 50px; border-radius: 50%; background: var(--bom); color: #fff; display: none; place-items: center; }
 
 .vias { display: grid; grid-template-rows: 1fr 1fr; gap: 14px; min-width: 0; }
-.hd { border: 1.5px solid var(--borda); border-radius: 16px; background: var(--surface); padding: 12px 15px; display: flex; flex-direction: column; gap: 6px; min-width: 0; transition: border-color .3s; }
+.hd { border: 1.5px solid var(--borda); border-radius: 10px; background: var(--surface); padding: 12px 15px; display: flex; flex-direction: column; gap: 6px; min-width: 0; transition: border-color .3s; }
 .topo-do-disco { display: flex; align-items: center; gap: 9px; color: var(--texto-2); font-size: 12px; }
-.topo-do-disco b { color: var(--texto-2); font-weight: 600; margin-right: auto; }
+.topo-do-disco b { color: var(--texto-2); font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; margin-right: auto; }
 .led { width: 9px; height: 9px; border-radius: 50%; background: var(--trilho); flex: none; }
-.espaco-barra { height: 9px; border-radius: 5px; background: var(--trilho); display: flex; overflow: hidden; margin-top: 2px; }
+.espaco-barra { height: 9px; border-radius: 2px; background: var(--trilho); display: flex; overflow: hidden; margin-top: 2px; }
 .espaco-barra .usado { background: var(--texto-3); }
 .espaco-barra .este { width: 0; background: repeating-linear-gradient(135deg, var(--acento) 0 5px, rgba(255, 130, 54, .55) 5px 10px); }
 
 /* os estados do palco */
 .palco[data-e="andando"] .sd { background: var(--acento); }
-.palco[data-e="andando"] .hd { border-color: var(--acento); }
+.palco[data-e="andando"] .hd, .palco[data-e="andando"] .status { border-color: var(--acento); }
 .palco[data-e="andando"] .fios { stroke: var(--acento); stroke-dasharray: 8 8; animation: escorrer .6s linear infinite; }
 .palco[data-e="andando"] .led { background: var(--bom); animation: piscar .45s steps(2, jump-none) infinite; }
 .palco[data-e="andando"] .pilula { background: var(--acento-fraco); color: var(--acento); }
-.palco[data-e="ok"] .hd, .palco[data-e="fora"] .hd { border-color: var(--bom); }
+.palco[data-e="ok"] .hd, .palco[data-e="fora"] .hd, .palco[data-e="ok"] .status, .palco[data-e="fora"] .status { border-color: var(--bom); }
 .palco[data-e="ok"] .fios, .palco[data-e="fora"] .fios { stroke: var(--bom); }
 .palco[data-e="ok"] .led, .palco[data-e="fora"] .led { background: var(--bom); }
 .palco[data-e="ok"] .pilula, .palco[data-e="fora"] .pilula { background: rgba(53, 194, 53, .16); color: var(--bom); }
@@ -176,30 +201,32 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
   .palco { grid-template-columns: 1fr; gap: 14px; }
   .fios { display: none; }
   .meio { min-height: 0; padding: 0; }
-  .abas span:not(.on), .auto, .fake-bts { display: none; }
+  .abas span:not(.on), .fake-bts { display: none; }
+  .opcoes { grid-template-columns: 1fr 1fr; }
 }
 
+@media (max-width: 560px) { .opcoes { display: none; } }
+
 .fake-bts { display: flex; gap: 6px; flex-wrap: wrap; }
-.fb { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--borda); border-radius: 7px; padding: 3px 9px; font-size: 12px; color: var(--texto-2); white-space: nowrap; }
-.abas span.direita { display: inline-flex; align-items: center; gap: 6px; }
+.fb { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--borda); border-radius: 5px; padding: 3px 8px; font: 500 10.5px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--texto-2); white-space: nowrap; }
+.abas span.direita { align-self: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--borda); border-radius: 5px; background: var(--surface); }
 .apptop .abas:last-child { margin-left: auto; }
-.projeto .auto { margin-left: auto; }
 
 /* pré-visualizar */
 .pv-topo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 .pv-topo b { font-size: 15px; font-weight: 650; color: var(--texto); margin-right: auto; }
 .pv-abas { display: flex; gap: 4px; }
-.pv-abas button { border: 1px solid var(--borda); background: var(--surface); border-radius: 999px; padding: 3px 12px; font-size: 12.5px; color: var(--texto-2); cursor: pointer; font-variant-numeric: tabular-nums; }
+.pv-abas button { border: 1px solid var(--borda); background: var(--surface); border-radius: 4px; padding: 3px 12px; font-size: 12.5px; color: var(--texto-2); cursor: pointer; font-variant-numeric: tabular-nums; }
 .pv-abas button[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--acento-texto); font-weight: 600; }
 .pv-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .pv-mini { border: 0; padding: 0; background: none; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.pv-img { position: relative; display: block; width: 100%; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; outline: 1.5px solid transparent; outline-offset: -1.5px; transition: transform .2s, outline-color .2s; }
+.pv-img { position: relative; display: block; width: 100%; aspect-ratio: 3 / 2; border-radius: 4px; overflow: hidden; outline: 1.5px solid transparent; outline-offset: -1.5px; transition: transform .2s, outline-color .2s; }
 .pv-mini:hover .pv-img { transform: scale(1.03); outline-color: var(--acento); }
 .pv-img .hora { position: absolute; left: 7px; bottom: 6px; font-size: 12px; font-weight: 650; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .7); font-variant-numeric: tabular-nums; }
 .pv-img .dur { position: absolute; right: 7px; bottom: 6px; font-size: 11px; color: #fff; background: rgba(0, 0, 0, .55); border-radius: 4px; padding: 0 5px; font-variant-numeric: tabular-nums; }
 .pv-img .play { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255, 255, 255, .9); }
 .pv-mini small { font-size: 11px; color: var(--texto-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pv-grande .pv-img { border-radius: 10px; }
+.pv-grande .pv-img { border-radius: 5px; }
 .pv-grande .pv-img .hora { font-size: 15px; left: 12px; bottom: 10px; }
 .pv-pe { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 12.5px; color: var(--texto-2); font-variant-numeric: tabular-nums; }
 .pv-pe span { margin-right: auto; min-width: 0; }
@@ -208,7 +235,7 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
 /* gravação interrompida */
 .corr { display: flex; flex-direction: column; align-items: center; }
 .corr .sd { width: 100%; max-width: 330px; }
-.atencao { display: flex; gap: 8px; align-items: flex-start; color: var(--alerta); font-size: 12.5px; font-weight: 600; border: 1px solid currentColor; border-radius: 9px; padding: 8px 10px; }
+.atencao { display: flex; gap: 8px; align-items: flex-start; color: var(--alerta); font-size: 12.5px; font-weight: 600; border: 1px solid currentColor; border-radius: 5px; padding: 8px 10px; }
 .atencao svg { flex: none; margin-top: 1px; }
 .atencao small { display: block; font-weight: 400; color: var(--texto-2); font-size: 12px; margin-top: 2px; }
 .notif { width: 100%; max-width: 380px; display: grid; grid-template-columns: 34px 1fr; gap: 11px; align-items: center; background: #242326; border: 1px solid #3a393e; border-radius: 14px; padding: 11px 13px; margin-top: 18px; box-shadow: 0 14px 30px -12px #000; opacity: 0; transform: translateX(26px); transition: opacity .6s, transform .6s cubic-bezier(.2, .9, .3, 1.1); }
@@ -218,32 +245,63 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
 
 /* níveis de economia */
 .niveis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
-.niveis button { border: 1px solid var(--borda); background: var(--surface); border-radius: 9px; padding: 7px 4px; font-size: 12.5px; color: var(--texto-2); cursor: pointer; transition: border-color .15s, background .15s, color .15s; }
+.niveis button { border: 1px solid var(--borda); background: var(--surface); border-radius: 5px; padding: 7px 4px; font-size: 12.5px; color: var(--texto-2); cursor: pointer; transition: border-color .15s, background .15s, color .15s; }
 .niveis button:hover { border-color: var(--texto-3); }
 .niveis button[aria-pressed="true"] { background: var(--acento-fraco); border-color: var(--acento); color: var(--texto); font-weight: 600; }
 .nivel-txt { font-size: 12.5px; color: var(--texto-2); margin: 10px 0 18px; min-height: 38px; }
 .nivel-txt b { color: var(--texto); font-weight: 600; }
 @media (max-width: 480px) { .niveis { grid-template-columns: 1fr 1fr; } }
 
+/* só o que falta, vários cartões, HD para HD */
+.inter .acao { display: flex; gap: 6px; flex-wrap: wrap; }
+.corr .inter { width: 100%; max-width: 330px; margin-top: 18px; }
+.corr .inter .msg { min-height: 78px; }
+.vc-lista { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+.vc { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 10px; align-items: center; border: 1.5px solid var(--borda); border-left: 5px solid var(--cor); border-radius: 6px; background: var(--surface); padding: 10px 12px; }
+.vc b { font-size: 14px; font-weight: 650; color: var(--texto); }
+.vc b small { font-weight: 400; font-size: 12px; color: var(--texto-2); margin-left: 7px; white-space: nowrap; }
+.vc .trilho, .vc .pe { grid-column: 1 / -1; }
+.vc .pe { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; min-height: 26px; font-size: 12px; color: var(--texto-2); }
+.vc[data-e="andando"] .pilula { background: var(--acento-fraco); color: var(--acento); }
+.vc[data-e="ok"] .pilula { background: rgba(53, 194, 53, .16); color: var(--bom); }
+.vc[data-e="ok"] .trilho i { background: var(--bom); }
+.v-msg { font-size: 12.5px; color: var(--texto-2); min-height: 38px; }
+.hd.pasta { position: relative; border-top-left-radius: 0; margin-top: 12px; }
+.hd.pasta::before { content: ""; position: absolute; left: -1.5px; top: -12px; width: 38%; height: 12px; border: 1.5px solid; border-color: inherit; border-bottom: 0; border-radius: 9px 9px 0 0; background: var(--surface); }
+.inter[data-e="copiando"] .hd { border-color: var(--acento); }
+.inter[data-e="copiando"] .led { background: var(--bom); animation: piscar .45s steps(2, jump-none) infinite; }
+.inter[data-e="ok"] .hd { border-color: var(--bom); }
+.inter[data-e="ok"] .led { background: var(--bom); }
+
+/* mandar os RAW para a Lixeira */
+.lixo { margin-top: 14px; min-height: 34px; }
+.lixo-painel { border: 1px solid var(--critico); border-radius: 6px; background: rgba(238, 106, 106, .08); padding: 12px; display: flex; flex-direction: column; gap: 10px; font-size: 12.5px; color: var(--texto-2); }
+.lixo-painel .papel { color: var(--critico); }
+.lixo-painel b { color: var(--texto); font-weight: 600; }
+.lixo-painel label { display: flex; gap: 8px; align-items: flex-start; color: var(--texto); cursor: pointer; }
+.lixo-painel input { accent-color: var(--critico); margin-top: 3px; }
+.lixo-painel .acao { display: flex; gap: 6px; flex-wrap: wrap; }
+.lixo-fim { font-size: 12.5px; color: var(--texto-2); display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+
 /* ---------- seções em duas colunas ---------- */
 .duo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
 .duo.inv > :first-child { order: 2; }
 @media (max-width: 860px) { .duo { grid-template-columns: 1fr; gap: 40px; } .duo.inv > :first-child { order: 0; } section { padding: 72px 0; } }
-.cx { background: var(--bloco); border: 1px solid var(--bloco-borda); border-radius: 20px; padding: 26px; color: var(--texto); font: 13.5px/1.45 var(--ui); min-width: 0; }
+.cx { background: var(--bloco); border: 1px solid var(--bloco-borda); border-radius: 14px; padding: 26px; color: var(--texto); font: 13.5px/1.45 var(--ui); min-width: 0; }
 
 /* o que copiar */
 .arvore { font-family: var(--mono); font-size: 12px; line-height: 1.75; color: var(--fraco); margin: 0 0 18px; white-space: pre; overflow-x: auto; }
 .arvore b { color: var(--acento); font-weight: 400; }
 .arvore s { text-decoration: none; opacity: .6; }
 .oque { display: flex; flex-direction: column; gap: 6px; }
-.item { display: grid; grid-template-columns: 24px minmax(0, 1fr) 20px; gap: 10px; align-items: center; text-align: left; border: 1px solid var(--borda); background: var(--surface); border-radius: 9px; padding: 7px 10px; cursor: pointer; color: var(--texto-3); transition: border-color .15s, background .15s, color .15s; }
+.item { display: grid; grid-template-columns: 24px minmax(0, 1fr) 20px; gap: 10px; align-items: center; text-align: left; border: 1px solid var(--borda); background: var(--surface); border-radius: 5px; padding: 7px 10px; cursor: pointer; color: var(--texto-3); transition: border-color .15s, background .15s, color .15s; }
 .item:hover { border-color: var(--texto-3); }
 .item[aria-pressed="true"] { color: var(--acento); border-color: var(--acento); background: var(--acento-fraco); }
 .item .tx { display: flex; flex-direction: column; min-width: 0; color: var(--texto); }
 .item .tx b { font-weight: 600; color: inherit; }
 .item .tx small { color: var(--texto-2); font-size: 12px; font-variant-numeric: tabular-nums; }
 .item[aria-pressed="false"] .tx b { color: var(--texto-2); font-weight: 500; }
-.caixa { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--borda); display: grid; place-items: center; color: transparent; transition: background .15s, border-color .15s; }
+.caixa { width: 20px; height: 20px; border-radius: 3px; border: 1.5px solid var(--borda); display: grid; place-items: center; color: transparent; transition: background .15s, border-color .15s; }
 .item[aria-pressed="true"] .caixa { background: var(--acento); border-color: var(--acento); color: #fff; }
 .soma { margin-top: 14px; font-size: 13px; color: var(--texto-2); font-variant-numeric: tabular-nums; min-height: 40px; }
 .soma b { color: var(--texto); font-weight: 650; }
@@ -263,15 +321,14 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
 .passos-conf li.agora { color: var(--texto); }
 .passos-conf li.agora .bola { border-color: var(--acento); box-shadow: 0 0 0 4px rgba(255, 130, 54, .16); }
 .arq { display: flex; align-items: center; gap: 9px; margin-bottom: 22px; font-family: var(--mono); font-size: 12.5px; color: var(--texto-2); }
-.arq .pilula { font-family: var(--ui); margin-left: auto; }
+.arq .pilula { margin-left: auto; }
 .arq .pilula.ok { background: rgba(53, 194, 53, .16); color: var(--bom); }
 
 /* interrupção */
 .inter { display: flex; flex-direction: column; gap: 14px; }
 .inter .linha1 { display: flex; align-items: center; gap: 10px; }
 .inter .linha1 b { font-size: 15px; font-weight: 650; color: var(--texto); margin-right: auto; }
-.inter .trilho { height: 10px; border-radius: 5px; }
-.inter .trilho i { border-radius: 5px; }
+.inter .trilho { height: 10px; }
 .inter .msg { color: var(--texto-2); font-size: 13px; min-height: 60px; }
 .inter[data-e="copiando"] .pilula { background: var(--acento-fraco); color: var(--acento); }
 .inter[data-e="interrompido"] .pilula { background: rgba(250, 178, 25, .16); color: var(--alerta); }
@@ -281,14 +338,17 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
 .inter[data-e="ok"] .trilho i { background: var(--bom); }
 
 /* pasta base */
-.pasta-raiz { display: inline-flex; align-items: center; gap: 8px; background: var(--acento); color: var(--acento-texto); font-weight: 650; border-radius: 10px; padding: 6px 13px; font-size: 13px; max-width: 100%; overflow-wrap: anywhere; }
+.pasta-raiz { display: inline-flex; align-items: center; gap: 8px; background: var(--acento); color: var(--acento-texto); font-weight: 650; border-radius: 5px; padding: 6px 13px; font-size: 13px; max-width: 100%; overflow-wrap: anywhere; }
 .pastas, .pastas ul { list-style: none; margin: 0; padding: 4px 0 0 18px; }
 .pastas { padding-left: 14px; }
+.pastas ul:empty { display: none; }
+#org { min-height: 575px; }
+.org-leg { margin-top: 16px; font-size: 12.5px; color: var(--texto-2); min-height: 20px; }
 .pastas li { position: relative; padding: 3px 0 3px 16px; }
 .pastas li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1.5px solid var(--borda); }
 .pastas li:last-child::before { bottom: auto; height: 17px; }
 .pastas li::after { content: ""; position: absolute; left: 0; top: 17px; width: 12px; border-top: 1.5px solid var(--borda); }
-.no { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--borda); background: var(--surface); border-radius: 8px; padding: 3px 9px; font-size: 12.5px; color: var(--texto-2); white-space: nowrap; }
+.no { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--borda); background: var(--surface); border-radius: 4px; padding: 3px 9px; font-size: 12.5px; color: var(--texto-2); white-space: nowrap; }
 .no.recebe { border-color: var(--acento); background: var(--acento-fraco); color: var(--texto); font-weight: 600; }
 .no.recebe svg { color: var(--acento); }
 .no i { width: 8px; height: 8px; border-radius: 50%; background: var(--cor); }
@@ -306,12 +366,12 @@ h3 { font: 600 16px/1.4 var(--ui); color: var(--luz); margin: 0 0 6px; }
 
 /* conversão DNG */
 .fila { display: flex; flex-direction: column; gap: 10px; }
-.fl { display: grid; grid-template-columns: minmax(0, 1fr) 118px minmax(0, 1fr); gap: 10px; align-items: center; }
-.fl .ponta { border: 1.5px solid var(--borda); border-radius: 11px; background: var(--surface); padding: 9px 11px; min-width: 0; transition: border-color .3s; }
+.fl { display: grid; grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr); gap: 10px; align-items: center; }
+.fl .ponta { border: 1.5px solid var(--borda); border-radius: 6px; background: var(--surface); padding: 9px 11px; min-width: 0; transition: border-color .3s; }
 .fl .ponta b { display: block; font-size: 13px; font-weight: 650; color: var(--texto); overflow-wrap: anywhere; }
 .fl .ponta small { font-size: 11.5px; color: var(--texto-2); font-variant-numeric: tabular-nums; }
 .fl .mid { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.fl .mid .pilula { font-size: 11px; }
+.fl .mid .pilula { font-size: 9.5px; }
 .fl .mid .trilho { height: 4px; }
 .fl[data-e="andando"] .ponta { border-color: var(--acento); }
 .fl[data-e="andando"] .pilula { background: var(--acento-fraco); color: var(--acento); }
@@ -389,6 +449,9 @@ footer a:hover { color: var(--luz); }
     <g id="i-aviso"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.500"/></g>
     <g id="i-folha"><path d="M5 19c0-8 5-13 14-14 0 9-4 14-12 14"/><path d="M5 19c2-4 5-7 9-9"/></g>
     <g id="i-baixar"><path d="M12 4v11M7.500 10.500L12 15l4.500-4.500M5 20h14"/></g>
+    <g id="i-comparar"><path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4"/></g>
+    <g id="i-ajuda"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.8M12 16.5v.5"/></g>
+    <g id="i-tema"><circle cx="12" cy="12" r="8.5"/><path fill="currentColor" stroke="none" d="M12 3.5a8.5 8.5 0 0 1 0 17z"/></g>
     <symbol id="logo" viewBox="0 0 24 24"><path fill="#ff8236" d="M6.500 2H15l4.500 4.500v14A1.500 1.500 0 0 1 18 22H6.500A1.500 1.500 0 0 1 5 20.500v-17A1.500 1.500 0 0 1 6.500 2z"/><path fill="#fff" d="M7.500 4.500h1.400v3.200H7.500zM10 4.500h1.400v3.200H10zM12.500 4.500h1.400v3.200h-1.400z"/><path fill="none" stroke="#fff" stroke-width="1.900" stroke-linecap="round" stroke-linejoin="round" d="M12.200 11v6.500M9.300 14.800l2.900 2.900 2.900-2.900"/></symbol>
   </defs>
 </svg>
@@ -416,7 +479,7 @@ footer a:hover { color: var(--luz); }
   <h1 class="rv d1">Conecte o cartão. <em>Ele copia, confere e avisa quando pode tirar.</em></h1>
   <p class="sub rv d2">
     <span class="frase1">Backup de cartão para quem chega cansado do evento e não pode errar.</span>
-    O <b>Descarrega</b> é um programa que acha o material bruto no cartão, copia para <b>um ou dois HDs ao mesmo tempo</b>, confere arquivo por arquivo e só então ejeta. E, se você quiser, ainda deixa as fotos <b>bem mais leves</b> para ocupar menos espaço no HD.
+    O <b>Descarrega</b> é um programa que acha o material bruto no cartão, copia para <b>um ou dois HDs ao mesmo tempo</b>, confere arquivo por arquivo e só então ejeta. Também copia <b>de um HD para outro</b> com a mesma conferência. E, se você quiser, ainda deixa as fotos <b>bem mais leves</b> para ocupar menos espaço no HD.
   </p>
   <div class="botoes rv d3">
     <a class="bt p" href="#como">Ver como funciona</a>
@@ -428,11 +491,17 @@ footer a:hover { color: var(--luz); }
       <div class="tbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><div class="t">Descarrega</div></div>
       <div class="apptop">
         <span class="logo"><svg width="20" height="20" aria-hidden="true"><use href="#logo"/></svg>Descarrega</span>
-        <div class="abas"><span class="on">Backup de cartões</span><span>Histórico</span></div>
+        <div class="abas"><span class="on">Backup de cartões</span><span>HD para HD</span><span>Histórico</span></div>
         <div class="abas"><span class="direita"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-folha"/></svg>Economizar espaço</span></div>
       </div>
       <div class="corpo">
-        <div class="projeto"><b>2026-10-03 MARINA E PEDRO - CASAMENTO</b><span>cartão 1 do projeto · equipe: Bia, Leo, Duda</span><span class="auto">Modo automático <i class="chave"></i></span></div>
+        <div class="projeto"><b>2026-10-03 MARINA E PEDRO - CASAMENTO</b><span>cartão 1 do projeto · equipe: Bia, Leo, Duda</span></div>
+        <div class="opcoes" aria-hidden="true">
+          <div class="chave"><span><span class="papel">Modo automático</span><b>Ligado</b></span><i class="interruptor"></i></div>
+          <div class="chave seg"><span class="papel">Vários cartões</span><div class="segmentos"><span class="on">Um por vez</span><span>Ao mesmo tempo</span></div></div>
+          <div class="chave"><span><span class="papel">Conferência dupla</span><b>Ligada</b></span><i class="interruptor"></i></div>
+          <div class="chave"><span><span class="papel">Ejetar ao terminar</span><b>Ligado</b></span><i class="interruptor"></i></div>
+        </div>
         <div class="rotulos"><span>Source</span><span>Delivery</span></div>
         <div class="palco" id="palco" data-e="some">
           <div class="sd" id="sd"><div class="dentro">
@@ -518,19 +587,47 @@ footer a:hover { color: var(--luz); }
     <div class="eyebrow">Os imprevistos</div>
     <h2>Arrancaram o cartão? <em>Ele continua de onde parou.</em></h2>
     <p class="txt">Cabo esbarrado, HD desconectado, Mac desligado no meio. O Descarrega para, descarta o arquivo que estava pela metade e diz o que aconteceu, em português.</p>
-    <p class="txt"><b>Experimente no quadro ao lado:</b> clique em "Arrancar o cartão" enquanto ele copia. Ao retomar, ele <b>confere de novo o que já estava copiado</b> e leva só o que falta. O Mac também não dorme enquanto a cópia está andando.</p>
+    <p class="txt"><b>Experimente no quadro ao lado:</b> clique em "Arrancar o cartão" enquanto ele copia. Ao retomar, o que já estava conferido <b>não é lido de novo</b>: ele leva só o que falta. O Mac também não dorme enquanto a cópia está andando.</p>
   </div>
   <div class="cx rv d1">
     <div class="inter" id="inter" data-e="copiando">
       <div class="linha1"><b>Cartão da Bia</b><span class="pilula" id="i-fase">Copiando</span></div>
       <span class="trilho"><i id="i-barra"></i></span>
       <div class="msg" id="i-msg" aria-live="polite"></div>
-      <div><button class="mini forte" id="i-botao">Arrancar o cartão</button></div>
+      <div class="acao"><button class="btn primario" id="i-botao">Arrancar o cartão</button></div>
     </div>
   </div>
 </div></section>
 
 <section><div class="w duo">
+  <div class="rv">
+    <div class="eyebrow">O mesmo cartão de volta</div>
+    <h2>Gravou mais no mesmo cartão? <em>Ele copia só o que falta.</em></h2>
+    <p class="txt">Você descarregou o making of e o cartão voltou para a câmera na cerimônia. Ao conectar de novo, o Descarrega reconhece que é o mesmo cartão, mostra <b>só os arquivos e os GB que faltam</b> e continua na mesma pasta. Nada de CARD 2 com tudo duplicado.</p>
+    <p class="txt">O que já foi copiado e conferido <b>não é lido de novo</b>: a segunda passada leva o tempo dos takes novos, não o do cartão inteiro. A barra de espaço do HD também desconta só o que falta.</p>
+  </div>
+  <div class="cx rv d1 corr" id="falta">
+    <div class="sd"><div class="dentro">
+      <div class="contatos"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="etiqueta" style="--cor:var(--p0)"><span class="nome">Untitled</span><span class="caminho">Cartão SD · 256 GB</span></div>
+      <span class="pessoa" style="--cor:var(--p0)"><i></i>Bia</span>
+      <div class="tipos">
+        <div class="tipo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-foto"/></svg><span>Fotos <small>· as 1.080 já estão no HD</small></span></div>
+        <div class="tipo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-video"/></svg><span>Vídeos <small id="f-video"></small></span></div>
+      </div>
+      <span class="nota total" id="f-total"></span>
+      <span class="nota ja-la" id="f-jala"></span>
+    </div></div>
+    <div class="inter" id="f-inter" data-e="espera">
+      <div class="linha1"><b>Cartão da Bia</b><span class="pilula"></span></div>
+      <span class="trilho"><i></i></span>
+      <div class="msg" aria-live="polite"></div>
+      <div class="acao"><button class="btn primario" id="f-botao"></button></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="w duo inv">
   <div class="rv">
     <div class="eyebrow">Gravação interrompida</div>
     <h2>A bateria acabou no meio do clipe? <em>Ele avisa antes de você formatar.</em></h2>
@@ -547,6 +644,21 @@ footer a:hover { color: var(--luz); }
       <div class="atencao"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-aviso"/></svg><div>1 arquivo pode estar corrompido<small>C0087.RSV · gravação interrompida. Vai ser copiado junto com os vídeos.</small></div></div>
     </div></div>
     <div class="notif" id="notif"><svg width="34" height="34" aria-hidden="true"><use href="#logo"/></svg><div><b>Descarrega</b><span>Backup conferido. 1 arquivo pode estar corrompido: não formate o cartão antes de ver.</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="w duo">
+  <div class="rv">
+    <div class="eyebrow">Vários cartões</div>
+    <h2>Dois leitores na mesa? <em>Em fila ou ao mesmo tempo, você escolhe.</em></h2>
+    <p class="txt"><b>Um por vez:</b> cada cartão é copiado com a velocidade toda e fica livre mais cedo, enquanto os outros esperam na fila. <b>Ao mesmo tempo:</b> até dois cartões são copiados juntos, sem esperar.</p>
+    <p class="txt">Conectou um cartão com outro já copiando? Ele aparece na hora, e o botão <b>Copiar agora, junto</b> começa sem esperar a fila. Experimente ao lado.</p>
+    <p class="txt" style="font-size:13.5px;color:var(--fraco)">Com SSD e leitores separados, copiar junto costuma ganhar tempo. Com HD de disco, a fila costuma ser melhor.</p>
+  </div>
+  <div class="cx rv d1" id="varios">
+    <div class="chave seg solta"><span class="papel">Vários cartões</span><div class="segmentos" id="v-seg"><button type="button">Um por vez</button><button type="button">Ao mesmo tempo</button></div></div>
+    <div class="vc-lista" id="v-lista"></div>
+    <div class="v-msg" id="v-msg" aria-live="polite"></div>
   </div>
 </div></section>
 
@@ -573,30 +685,14 @@ footer a:hover { color: var(--luz); }
   <div class="rv">
     <div class="eyebrow">A organização</div>
     <h2>A sua pasta base, <em>montada sozinha</em></h2>
-    <p class="txt">Diga a data, o nome do evento e quem é a equipe. Ele cria a estrutura e coloca cada cartão no lugar: <b>CARD 1, CARD 2, CARD 3</b>, por pessoa.</p>
-    <p class="txt">Usa outro padrão de pastas? Aponte uma pasta modelo e ele aprende o seu estilo, que fica salvo para os próximos projetos.</p>
-    <p class="txt">Ele reconhece de quem é o cartão pelo nome dos arquivos e pelos dados da câmera. O que você confirma uma vez, ele lembra.</p>
+    <p class="txt">Diga a data, o nome do evento e quem é a equipe. Ele coloca cada cartão no lugar: <b>CARD 1, CARD 2, CARD 3</b>, por pessoa.</p>
+    <p class="txt"><b>A pasta só nasce quando o material chega.</b> Trabalho só de foto não ganha pasta de vídeo vazia, e uma pasta de drone vazia não fica ali fazendo você esquecer de copiar o drone.</p>
+    <p class="txt">Usa outro padrão de pastas? Aponte uma pasta modelo e ele aprende o seu estilo, que fica salvo para os próximos projetos. Ele reconhece de quem é o cartão pelo nome dos arquivos e pelos dados da câmera, e o que você confirma uma vez, ele lembra.</p>
   </div>
   <div class="cx rv d1" id="org">
     <span class="pasta-raiz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-pasta"/></svg>2026-10-03 MARINA E PEDRO - CASAMENTO</span>
-    <ul class="pastas">
-      <li><span class="no">FOTO</span>
-        <ul><li><span class="no">MATERIAL BRUTO</span>
-          <ul>
-            <li><span class="no recebe" style="--cor:var(--p0)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-foto"/></svg>CARD BIA<i></i></span>
-              <ul id="cards-bia"><li><span class="no">CARD 1</span></li></ul></li>
-            <li><span class="no recebe" style="--cor:var(--p2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-foto"/></svg>CARD LEO<i></i></span></li>
-          </ul></li></ul>
-      </li>
-      <li><span class="no">VIDEO</span>
-        <ul><li><span class="no">MATERIAL BRUTO</span>
-          <ul>
-            <li><span class="no recebe" style="--cor:var(--p3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-video"/></svg>CARD DUDA<i></i></span></li>
-            <li><span class="no recebe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-audio"/></svg>CARD AUDIOS</span></li>
-            <li><span class="no recebe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-drone"/></svg>CARD DRONE</span></li>
-          </ul></li></ul>
-      </li>
-    </ul>
+    <ul class="pastas" id="arvore"></ul>
+    <div class="legenda org-leg"><span id="org-leg" aria-live="polite"></span><button class="mini" id="org-repetir">Repetir</button></div>
   </div>
 </div></section>
 
@@ -611,6 +707,41 @@ footer a:hover { color: var(--luz); }
     <div class="pv-topo"><b>Untitled</b><div class="pv-abas" id="pv-abas"></div></div>
     <div id="pv-corpo"></div>
     <div class="aviso-demo">Demonstração com imagens de exemplo.</div>
+  </div>
+</div></section>
+
+<section><div class="w duo">
+  <div class="rv">
+    <div class="eyebrow">HD para HD</div>
+    <h2>Não é só cartão. <em>De um HD para outro, com a mesma conferência.</em></h2>
+    <p class="txt">Passar o evento do SSD de campo para o HD de arquivo, ou duplicar uma pasta inteira: na aba <b>HD para HD</b> você escolhe a origem e o destino, ou arrasta as duas pastas para a janela. Sem cartão e sem precisar criar projeto.</p>
+    <p class="txt">Ele copia <b>tudo, com a mesma estrutura de pastas</b>, pelo mesmo copiador conferido dos cartões. Antes de começar, mostra quantos arquivos são, quanto falta copiar e se cabe.</p>
+    <ul class="lista">
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-certo"/></svg><span><b>Nada é sobrescrito.</b> O que já está no destino e é igual não é copiado de novo.</span></li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-certo"/></svg><span><b>Parou no meio? Retoma.</b> Sem ler de novo o que já foi conferido.</span></li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-certo"/></svg><span><b>Relatório no destino</b>, com a lista de conferência, como nos cartões.</span></li>
+    </ul>
+  </div>
+  <div class="cx rv d1" id="direta">
+    <div class="inter" id="d-inter" data-e="espera">
+      <div class="hd pasta">
+        <div class="topo-do-disco"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-pasta"/></svg><b>Origem</b></div>
+        <span class="nome">2026-10-03 MARINA E PEDRO - CASAMENTO</span>
+        <span class="caminho">SSD EVENTOS</span>
+        <span class="nota" id="d-origem">&nbsp;</span>
+      </div>
+      <div class="linha1"><b>Cópia direta</b><span class="pilula"></span></div>
+      <span class="trilho"><i></i></span>
+      <div class="msg" aria-live="polite"></div>
+      <div class="hd">
+        <div class="topo-do-disco"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-hd"/></svg><b>Destino</b><i class="led"></i></div>
+        <span class="nome">HD ARQUIVO</span>
+        <span class="caminho">cria uma pasta com o mesmo nome da origem</span>
+        <div class="espaco-barra"><i class="usado" style="width:30%"></i><i class="este" id="d-este"></i></div>
+        <span class="nota">4 TB · sobram <span id="d-sobra">2.800</span> GB</span>
+      </div>
+    </div>
+    <div class="legenda"><span></span><button class="mini" id="d-repetir">Repetir</button></div>
   </div>
 </div></section>
 
@@ -629,6 +760,9 @@ footer a:hover { color: var(--luz); }
     <div class="rec rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-pessoas"/></svg></div><h3>Uma cor por pessoa</h3><p>Cada freela da equipe tem a sua cor, na etiqueta do cartão e nas pastas. Dá para saber de quem é só de olhar.</p></div>
     <div class="rec rv d1"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-relogio"/></svg></div><h3>Resumo no fim</h3><p>Tempo estimado e tempo real, velocidade média e o que foi copiado de cada cartão. Com notificação e som quando termina.</p></div>
     <div class="rec rv d2"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-pasta"/></svg></div><h3>Histórico de eventos</h3><p>Todos os projetos, a equipe e os cartões de cada um. Um clique e você continua o projeto de onde parou. Apagar um evento da lista nunca toca nos arquivos.</p></div>
+    <div class="rec rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-comparar"/></svg></div><h3>Comparar origem e destino</h3><p>Ficou na dúvida se um cartão ou uma pasta já está no HD? Ele compara os dois e lista o que falta, sem copiar nem alterar nada.</p></div>
+    <div class="rec rv d1"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-ajuda"/></svg></div><h3>Ajuda em cada opção</h3><p>Um ponto de interrogação ao lado de cada opção explica, em uma frase, o que ela faz. E os painéis que você não usa podem ficar recolhidos.</p></div>
+    <div class="rec rv d2"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-tema"/></svg></div><h3>Claro ou escuro</h3><p>A tela acompanha o tema do seu computador e ocupa a janela inteira, do notebook ao monitor grande.</p></div>
   </div>
 </div></section>
 
@@ -638,7 +772,8 @@ footer a:hover { color: var(--luz); }
     <h2>Quer economizar espaço <em>com as fotos?</em></h2>
     <p class="txt">O backup já está feito e conferido. Este passo é opcional: na aba <b>Economizar espaço</b>, o Descarrega converte as fotos RAW em DNG, que ocupa uma fração do espaço no HD.</p>
     <p class="txt">Você escolhe o quanto quer economizar, em <b>quatro níveis</b>: do que guarda tudo o que o RAW tem ao menor arquivo possível. No nível Econômico, o padrão, um casamento real foi de <b>80 GB de fotos para 9 GB</b>, com uma pequena perda de qualidade.</p>
-    <p class="txt">Solte a pasta do evento na janela: ele reconhece cada fotógrafo, converte em fila e confere no fim se a quantidade de fotos bate. Os originais continuam onde estão, e é você quem decide o que fazer com eles.</p>
+    <p class="txt">Solte a pasta do evento na janela: ele reconhece cada fotógrafo, converte em fila e confere no fim se a quantidade de fotos bate. A pasta de DNG <b>repete as pastas do RAW</b> (CARD 1, CARD 2…), e os JPEG que a câmera gravou junto com o RAW são copiados para lá também.</p>
+    <p class="txt"><b>E os RAW originais?</b> Ficam onde estão. Só vão para a Lixeira se você pedir, depois de <b>duas confirmações</b>, e só os que têm o seu DNG conferido. Enquanto você não esvaziar a Lixeira, dá para trazer de volta.</p>
     <ul class="lista">
       <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-baixar"/></svg><span><b>Precisa do Adobe DNG Converter instalado no computador.</b> Ele é gratuito, e a gente ajuda: o guia rápido do programa abre a página oficial de download e avisa quando está tudo pronto.</span></li>
     </ul>
@@ -648,6 +783,7 @@ footer a:hover { color: var(--luz); }
     <div class="nivel-txt" id="nivel-txt" aria-live="polite"></div>
     <div class="fila" id="fila"></div>
     <div class="fila-pe"><span id="fila-leg" aria-live="polite">3 fotógrafos na fila</span><button class="mini" id="fila-repetir">Repetir</button></div>
+    <div class="lixo" id="lixo"></div>
     <div class="aviso-demo">Demonstração no nível Econômico. A economia depende da câmera e do nível escolhido.</div>
   </div>
 </div></section>
@@ -689,6 +825,12 @@ const $ = (id) => document.getElementById(id);
 const inteiro = (n) => Math.round(n).toLocaleString("pt-BR");
 const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const esperar = (ms) => new Promise((ok) => setTimeout(ok, calmo ? 0 : ms));
+const icone = (id, tamanho = 18) => `<svg width="${tamanho}" height="${tamanho}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+// Uma faixa de andamento (.inter): estado, selo, texto e, se vier, a barra.
+function faixa(el, estado, fase, msg, parte) {
+  el.dataset.e = estado; el.querySelector(".pilula").textContent = fase; el.querySelector(".msg").innerHTML = msg;
+  if (parte != null) el.querySelector(".trilho i").style.width = (parte * 100) + "%";
+}
 
 // Anda de 0 a 1 em `ms`. Usa setInterval para continuar mesmo com a aba em segundo plano.
 function andar(ms, aCada, vivo) {
@@ -840,26 +982,148 @@ $("i-botao").onclick = async () => {
     if (inter.n < 1) return;
     clearInterval(inter.relogio);
     const feitos = inter.n;
-    mostrarInter("interrompido", "Interrompido", `O cartão foi desconectado no arquivo ${inteiro(feitos + 1)}. O arquivo que estava pela metade foi descartado. Os ${inteiro(feitos)} anteriores estão guardados.`, "Reconectar e retomar");
+    mostrarInter("interrompido", "Interrompido", `O cartão foi desconectado no arquivo ${inteiro(feitos + 1)}. O arquivo que estava pela metade foi descartado. Os ${inteiro(feitos)} anteriores estão guardados e conferidos.`, "Reconectar e retomar");
   } else if (estado === "interrompido") {
     const feitos = inter.n;
-    mostrarInter("conferindo", "Conferindo o que já estava copiado", "", "");
-    await andar(1300, (t) => { $("i-msg").textContent = `${inteiro(feitos * t)} de ${inteiro(feitos)} conferidos de novo.`; }, () => true);
+    mostrarInter("conferindo", "Retomando", `Os ${inteiro(feitos)} arquivos já conferidos ficam como estão: não são lidos de novo. Agora vai só o que falta.`, "");
+    await esperar(2200);
     copiarInter();
   } else { inter.n = 0; copiarInter(); }
 };
 if (calmo) { inter.n = 412; mostrarInter("copiando", "Copiando", "Arquivo 412 de 1.307.", "Arrancar o cartão"); }
 else { mostrarInter("copiando", "Copiando", "", "Arrancar o cartão"); aoVer($("inter"), copiarInter); }
 
-// ---------- a pasta do segundo cartão ----------
-aoVer($("org"), async () => {
-  for (const n of [2, 3]) {
-    await esperar(1300);
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="no novo">CARD ${n}</span>`;
-    $("cards-bia").append(li);
+// ---------- só o que falta ----------
+const JA_LA = 1307, NOVOS = 14;
+let faltaRodada = 0;
+function mostrarFalta(feito) {
+  $("f-video").textContent = feito ? "· os 241 já estão no HD" : `· faltam ${NOVOS} de 241 · 9 GB`;
+  $("f-total").textContent = feito ? "Tudo deste cartão já está no HD" : `Faltam copiar ${NOVOS} arquivos · 9 GB`;
+  $("f-jala").textContent = feito ? "" : `${inteiro(JA_LA)} arquivos (212 GB) deste cartão já estão no HD e não são copiados de novo`;
+  $("f-botao").textContent = feito ? "Repetir" : "Copiar o que falta";
+  $("f-botao").hidden = false;
+}
+function prepararFalta() {
+  faltaRodada++;
+  mostrarFalta(false);
+  faixa($("f-inter"), "espera", "Mesmo cartão", "Vai continuar em <code>CARD BIA/CARD 1</code>, onde já estão os outros arquivos deste cartão.", 0);
+}
+$("f-botao").onclick = async () => {
+  if ($("f-botao").textContent === "Repetir") return prepararFalta();
+  const eu = ++faltaRodada, vivo = () => eu === faltaRodada, el = $("f-inter");
+  $("f-botao").hidden = true;
+  await andar(3200, (t) => faixa(el, "copiando", "Copiando", `Arquivo ${Math.max(1, Math.round(NOVOS * t))} de ${NOVOS} · ${inteiro(JA_LA)} já no HD.`, t), vivo); if (!vivo()) return;
+  await andar(1600, (t) => faixa(el, "copiando", "Comparando com o cartão", `${Math.round(NOVOS * t)} de ${NOVOS} conferidos.`, t), vivo); if (!vivo()) return;
+  faixa(el, "ok", "Conferido", `${NOVOS} arquivos copiados e conferidos. Os ${inteiro(JA_LA)} que já estavam no HD não foram lidos de novo.`, 1);
+  mostrarFalta(true);
+};
+prepararFalta();
+
+// ---------- vários cartões ----------
+const varios = { juntos: false, relogio: null, volta: null, cartoes: [
+  { nome: "Cartão da Bia", oque: "fotos · 38 GB", cor: "--p0", tamanho: 60 },
+  { nome: "Cartão da Duda", oque: "vídeos · 96 GB", cor: "--p3", tamanho: 100 },
+] };
+// As linhas são montadas uma vez e só atualizadas depois, para o botão não ser trocado debaixo do mouse.
+function montarVarios() {
+  $("v-lista").replaceChildren(...varios.cartoes.map((c) => {
+    c.el = document.createElement("div");
+    c.el.className = "vc"; c.el.style.setProperty("--cor", `var(${c.cor})`);
+    c.el.innerHTML = `<b>${c.nome}<small>${c.oque}</small></b><span class="pilula"></span><span class="trilho"><i></i></span>
+      <div class="pe"><span></span><button class="btn pq" type="button" hidden>Copiar agora, junto</button></div>`;
+    c.el.querySelector("button").onclick = () => { c.junto = true; passoDosVarios(0); };
+    return c.el;
+  }));
+  [...$("v-seg").children].forEach((b, i) => b.onclick = () => { varios.juntos = !!i; passoDosVarios(0); });
+}
+function passoDosVarios(anda) {
+  const cs = varios.cartoes, pronto = (c) => c.feito >= c.tamanho;
+  const ativos = cs.filter((c) => !pronto(c)).filter((c, i) => varios.juntos || i === 0 || c.junto).slice(0, 2);
+  const ritmo = ativos.length > 1 ? .6 : 1; // juntos, cada um anda mais devagar: dividem o HD de destino
+  for (const c of ativos) c.feito = Math.min(c.tamanho, c.feito + anda * ritmo);
+  $("v-seg").classList.toggle("segundo", varios.juntos);
+  [...$("v-seg").children].forEach((b, i) => b.setAttribute("aria-pressed", !!i === varios.juntos));
+  for (const c of cs) {
+    const ativo = ativos.includes(c) && !pronto(c), parte = c.feito / c.tamanho;
+    c.el.dataset.e = pronto(c) ? "ok" : ativo ? "andando" : "fila";
+    c.el.querySelector(".pilula").textContent = pronto(c) ? "Conferido" : ativo ? `Copiando ${Math.round(parte * 100)}%` : "Na fila";
+    c.el.querySelector(".trilho i").style.width = (parte * 100) + "%";
+    c.el.querySelector(".pe span").textContent = pronto(c) ? "Ejetado. Já pode tirar do leitor." : ativo ? (ativos.length > 1 ? "Dividindo o HD com o outro cartão" : "Com a velocidade toda") : "Começa quando o outro terminar";
+    c.el.querySelector("button").hidden = pronto(c) || ativo;
   }
-});
+  $("v-msg").textContent = varios.juntos ? "Até dois cartões juntos. Um terceiro espera um deles terminar." : "Um por vez: o primeiro fica livre mais cedo. Quem não quer esperar usa o botão Copiar agora, junto.";
+  if (cs.every(pronto) && varios.relogio) {
+    clearInterval(varios.relogio); varios.relogio = null;
+    varios.volta = setTimeout(comecarVarios, 3500); // em laço, para os botões estarem sempre à mão
+  }
+}
+function comecarVarios() {
+  clearInterval(varios.relogio); clearTimeout(varios.volta);
+  for (const c of varios.cartoes) { c.feito = 0; c.junto = false; }
+  if (calmo) { varios.cartoes[0].feito = 27; varios.relogio = null; return passoDosVarios(0); }
+  varios.relogio = setInterval(() => passoDosVarios(1), 80);
+  passoDosVarios(0);
+}
+montarVarios();
+for (const c of varios.cartoes) c.feito = 0;
+passoDosVarios(0);
+if (calmo) comecarVarios(); else aoVer($("varios"), comecarVarios);
+
+// ---------- a pasta só nasce quando o material chega ----------
+const CHEGADAS = [
+  { leg: "Cartão da Bia, com fotos: nasce o ramo FOTO.", caminho: ["FOTO", "MATERIAL BRUTO", ["CARD BIA", "foto", "--p0"], "CARD 1"] },
+  { leg: "Cartão do Leo, também com fotos.", caminho: ["FOTO", "MATERIAL BRUTO", ["CARD LEO", "foto", "--p2"], "CARD 1"] },
+  { leg: "Cartão da Duda, com vídeos: só agora existe a pasta VIDEO.", caminho: ["VIDEO", "MATERIAL BRUTO", ["CARD DUDA", "video", "--p3"], "CARD 1"] },
+  { leg: "Segundo cartão da Bia: vira CARD 2.", caminho: ["FOTO", "MATERIAL BRUTO", ["CARD BIA", "foto", "--p0"], "CARD 2"] },
+  { leg: "Cartão do drone: a pasta dele aparece agora, não antes.", caminho: ["VIDEO", "MATERIAL BRUTO", ["CARD DRONE", "drone"]] },
+];
+function porNaArvore(caminho) {
+  let ul = $("arvore");
+  for (const parte of caminho) {
+    const [nome, tipo, cor] = [].concat(parte);
+    let li = [...ul.children].find((x) => x.dataset.n === nome);
+    if (!li) {
+      li = document.createElement("li"); li.dataset.n = nome;
+      li.innerHTML = tipo
+        ? `<span class="no recebe novo"${cor ? ` style="--cor:var(${cor})"` : ""}>${icone(tipo, 14)}${nome}${cor ? "<i></i>" : ""}</span><ul></ul>`
+        : `<span class="no novo">${nome}</span><ul></ul>`;
+      ul.append(li);
+    }
+    ul = li.lastElementChild;
+  }
+}
+let orgRodada = 0;
+async function organizar() {
+  const eu = ++orgRodada;
+  $("arvore").replaceChildren();
+  $("org-leg").textContent = "Projeto criado: por enquanto, só a pasta dele.";
+  for (const chegada of CHEGADAS) {
+    await esperar(1700); if (eu !== orgRodada) return;
+    porNaArvore(chegada.caminho);
+    $("org-leg").textContent = chegada.leg;
+  }
+}
+$("org-repetir").onclick = organizar;
+aoVer($("org"), organizar);
+
+// ---------- HD para HD ----------
+const D_ARQUIVOS = 3412, D_GIGAS = 486;
+let diretaRodada = 0;
+async function copiarDireta() {
+  const eu = ++diretaRodada, vivo = () => eu === diretaRodada, el = $("d-inter");
+  const espaco = (t) => { $("d-este").style.width = (12 * t) + "%"; $("d-sobra").textContent = inteiro(2800 - D_GIGAS * t); };
+  espaco(0); $("d-origem").innerHTML = "&nbsp;";
+  faixa(el, "espera", "Lendo a origem", "Contando os arquivos e conferindo se cabe no destino.", 0);
+  await esperar(1300); if (!vivo()) return;
+  $("d-origem").textContent = `${inteiro(D_ARQUIVOS)} arquivos · ${D_GIGAS} GB`;
+  faixa(el, "espera", "Pronto", `${inteiro(D_ARQUIVOS)} arquivos para copiar. Cabe no destino.`, 0);
+  await esperar(1700); if (!vivo()) return;
+  await andar(4600, (t) => { faixa(el, "copiando", "Copiando", `Arquivo ${inteiro(Math.max(1, D_ARQUIVOS * t))} de ${inteiro(D_ARQUIVOS)}, na mesma estrutura de pastas.`, t); espaco(t); }, vivo); if (!vivo()) return;
+  await andar(2400, (t) => faixa(el, "copiando", "Comparando com a origem", `${inteiro(D_ARQUIVOS * t)} de ${inteiro(D_ARQUIVOS)} conferidos.`, t), vivo); if (!vivo()) return;
+  faixa(el, "ok", "Conferido", `${inteiro(D_ARQUIVOS)} de ${inteiro(D_ARQUIVOS)} arquivos conferidos. Relatório e lista de conferência gravados no destino.`, 1);
+}
+$("d-repetir").onclick = copiarDireta;
+aoVer($("direta"), copiarDireta);
 
 // ---------- pré-visualizar ----------
 const HORAS = ["15:08", "15:52", "16:40", "17:21", "18:03", "19:36", "21:14", "23:02", "00:47"];
@@ -941,6 +1205,7 @@ async function converter() {
     return linha;
   }));
   $("fila-leg").textContent = "3 fotógrafos na fila";
+  $("lixo").replaceChildren();
   await esperar(700);
   for (const [i, f] of FOTOGRAFOS.entries()) {
     if (!vivo()) return;
@@ -956,6 +1221,23 @@ async function converter() {
     linha.dataset.e = "ok"; pilula.textContent = "Bate"; saida.textContent = `${inteiro(f.n)} de ${inteiro(f.n)} · ${gigas(f.para)}`;
   }
   $("fila-leg").textContent = "Tudo bate. 58 GB de fotos viraram 5 GB.";
+  pedirLixeira(0);
+}
+
+// ---------- os RAW originais só vão para a Lixeira com duas confirmações ----------
+function pedirLixeira(etapa) {
+  const lixo = $("lixo"), cancelar = `<button class="btn primario" type="button" data-ir="0">Cancelar, manter os RAW</button>`;
+  lixo.innerHTML = [
+    `<button class="btn perigo" type="button" data-ir="1">Mandar as pastas de RAW para a Lixeira…</button>`,
+    `<div class="lixo-painel"><span class="papel">Confirmação 1 de 2</span><div><b>2.537 RAW · 58 GB</b> vão para a Lixeira. Todos têm o seu DNG conferido. No nível Econômico, o DNG tem menos qualidade e resolução que o RAW.</div>
+      <div class="acao">${cancelar}<button class="btn perigo" type="button" data-ir="2">Continuar</button></div></div>`,
+    `<div class="lixo-painel"><span class="papel">Confirmação 2 de 2</span><label><input type="checkbox"><span>Tenho outra cópia destes RAW, ou não preciso mais deles.</span></label>
+      <div class="acao">${cancelar}<button class="btn perigo cheio" type="button" data-ir="3" disabled>Mandar 2.537 RAW para a Lixeira</button></div></div>`,
+    `<div class="lixo-fim"><span>RAW na Lixeira. O espaço só é liberado quando você esvaziar a Lixeira; até lá, dá para trazer de volta.</span><button class="mini" type="button" data-ir="0">Desfazer</button></div>`,
+  ][etapa];
+  lixo.querySelectorAll("button").forEach((b) => b.onclick = () => pedirLixeira(+b.dataset.ir));
+  const marca = lixo.querySelector("input");
+  if (marca) marca.onchange = () => { lixo.querySelector(".cheio").disabled = !marca.checked; };
 }
 $("fila-repetir").onclick = converter;
 aoVer($("dng-demo"), converter);
