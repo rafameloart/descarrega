@@ -414,6 +414,52 @@ footer .sp { flex: 1; }
 footer a { color: var(--meio); text-decoration: none; }
 footer a:hover { color: var(--luz); }
 
+/* ---------- stories (os vídeos) ---------- */
+.st-bolhas { display: flex; gap: 16px; margin: 40px -30px 0; padding: 4px 30px 8px; overflow-x: auto; scrollbar-width: none; }
+.st-bolhas::-webkit-scrollbar { display: none; }
+.st-bolha { flex: none; width: 78px; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 0; background: none; padding: 0; cursor: pointer; }
+.st-bolha:first-child { margin-left: auto; }
+.st-bolha:last-child { margin-right: auto; }
+.st-bolha .anel { width: 70px; height: 70px; border-radius: 50%; padding: 2.5px; background: linear-gradient(135deg, #ffb45e, var(--acento) 55%, #e2470f); transition: transform .2s, background .3s; }
+.st-bolha:hover .anel { transform: scale(1.05); }
+.st-bolha img { display: block; width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--pag); object-fit: cover; object-position: 50% 42%; background: var(--bloco); }
+.st-bolha .nm { font-size: 11.5px; line-height: 1.3; color: var(--meio); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .2s; }
+.st-bolha.vista .anel { background: var(--bloco-borda); }
+.st-bolha.atual .nm { color: var(--luz); font-weight: 500; }
+.st-bolha.atual .anel { box-shadow: 0 0 0 2px var(--pag), 0 0 0 3.5px var(--acento); }
+.st-palco { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 26px; }
+.st-fone { position: relative; flex: none; width: min(340px, 100%, calc((100vh - 130px) * 9 / 16)); min-width: 220px; aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; background: #000; border: 1px solid #2c2b31; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .02); color: #fff; text-align: left; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.st-fone video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.st-fone .sombra { position: absolute; inset: 0; background: linear-gradient(rgba(0, 0, 0, .6), transparent 20%); pointer-events: none; }
+.st-toque { position: absolute; inset: 0; z-index: 2; cursor: pointer; touch-action: pan-y; }
+.st-barras { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 3; display: flex; gap: 4px; pointer-events: none; }
+.st-barras span { flex: 1; height: 2.5px; border-radius: 2px; background: rgba(255, 255, 255, .32); overflow: hidden; }
+.st-barras i { display: block; height: 100%; background: #fff; transform-origin: left; transform: scaleX(0); }
+.st-topo { position: absolute; top: 22px; left: 12px; right: 10px; z-index: 3; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.st-topo .av { flex: none; width: 30px; height: 30px; border-radius: 50%; background: #1d1d1c; display: grid; place-items: center; }
+.st-topo .quem { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 12.5px; line-height: 1.25; text-shadow: 0 1px 6px rgba(0, 0, 0, .7); }
+.st-topo .quem b { color: #fff; font-weight: 600; }
+.st-topo .quem span { color: rgba(255, 255, 255, .78); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-ic { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, .38); color: #fff; display: grid; place-items: center; cursor: pointer; pointer-events: auto; transition: background .2s; }
+.st-ic:hover { background: rgba(0, 0, 0, .62); }
+.st-ouvir { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 3; display: none; align-items: center; gap: 7px; white-space: nowrap; border: 1px solid rgba(255, 255, 255, .2); border-radius: 100px; background: rgba(10, 10, 12, .78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #fff; font-size: 12.5px; font-weight: 600; padding: 8px 15px; cursor: pointer; }
+.st-fone.mudo:not(.parado):not(.fim) .st-ouvir { display: inline-flex; }
+.st-play { position: absolute; left: 50%; top: 50%; z-index: 1; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(10, 10, 12, .6); display: none; place-items: center; pointer-events: none; }
+.st-fone.parado:not(.fim) .st-play { display: grid; }
+.st-fim { position: absolute; inset: 0; z-index: 4; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; background: rgba(10, 10, 12, .86); }
+.st-fone.fim .st-fim { display: flex; }
+.st-fim b { font-size: 17px; color: var(--luz); font-weight: 600; }
+.st-fim span { font-size: 13.5px; color: var(--meio); max-width: 26ch; }
+.st-seta { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--bloco-borda); background: transparent; color: var(--meio); display: grid; place-items: center; cursor: pointer; transition: color .2s, border-color .2s; }
+.st-seta:hover { color: var(--luz); border-color: var(--fraco); }
+@media (max-width: 560px) { .st-seta { display: none; } }
+@media (max-width: 480px) {
+  .st-bolhas { gap: 5px; }
+  .st-bolha { width: 62px; gap: 6px; }
+  .st-bolha .anel { width: 58px; height: 58px; }
+  .st-bolha .nm { font-size: 10.5px; white-space: normal; text-align: center; }
+}
+
 /* entrada ao rolar */
 .rv { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
 .rv.visto { opacity: 1; transform: none; }
@@ -681,6 +727,39 @@ footer a:hover { color: var(--luz); }
   </div>
 </div></section>
 
+<section id="stories" class="centro"><div class="w">
+  <div class="rv">
+    <div class="eyebrow">Em vídeo</div>
+    <h2>Prefere ver? <em>Cinco histórias de um minuto.</em></h2>
+    <p class="sub" style="font-size:15px">Cada vídeo mostra o Descarrega por um ângulo. Toque à direita para avançar, à esquerda para voltar, e segure para pausar.</p>
+  </div>
+  <div class="st-bolhas rv" id="st-bolhas"></div>
+  <div class="st-palco rv d1">
+    <button type="button" class="st-seta" id="st-ant" aria-label="Vídeo anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
+    <div class="st-fone mudo parado" id="st-fone" tabindex="0" role="group" aria-label="Vídeos do Descarrega, em formato de stories">
+      <video id="st-video" playsinline muted preload="none" poster="stories/s1.jpg"></video>
+      <div class="sombra"></div>
+      <div class="st-play"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></div>
+      <div class="st-toque" id="st-toque"></div>
+      <div class="st-barras" id="st-barras"></div>
+      <div class="st-topo">
+        <span class="av"><svg width="19" height="19" aria-hidden="true"><use href="#logo"/></svg></span>
+        <span class="quem"><b>descarrega</b><span id="st-nome" aria-live="polite"></span></span>
+        <button type="button" class="st-ic" id="st-pausa" aria-label="Pausar"></button>
+        <button type="button" class="st-ic" id="st-som" aria-label="Ligar o som"></button>
+      </div>
+      <button type="button" class="st-ouvir" id="st-ouvir"></button>
+      <div class="st-fim">
+        <svg width="44" height="44" aria-hidden="true"><use href="#logo"/></svg>
+        <b>Você viu os cinco.</b>
+        <span>O resto da página mostra cada parte funcionando.</span>
+        <button type="button" class="bt s" id="st-denovo">Ver de novo</button>
+      </div>
+    </div>
+    <button type="button" class="st-seta" id="st-prox" aria-label="Próximo vídeo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></button>
+  </div>
+</div></section>
+
 <section><div class="w duo">
   <div class="rv">
     <div class="eyebrow">A organização</div>
@@ -859,6 +938,116 @@ const entrada = new IntersectionObserver((entradas) => {
   for (const e of entradas) if (e.isIntersecting) { e.target.classList.add("visto"); entrada.unobserve(e.target); }
 }, { threshold: .12 });
 document.querySelectorAll(".rv").forEach((el) => entrada.observe(el));
+
+// ---------- os stories ----------
+// Os vídeos ficam em stories/sN.mp4, com a capa em stories/sN.jpg. Só o que está tocando é baixado.
+const STORIES = ["Em 1 minuto", "A parte chata", "Ctrl+C, Ctrl+V", "Dia de evento", "Já fiz backup?"];
+(() => {
+  const fone = $("st-fone"), video = $("st-video"), toque = $("st-toque");
+  const traco = (d) => `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const FALANTE = '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/>';
+  const I = {
+    som: traco(FALANTE + '<path d="M15.5 9.2a4 4 0 0 1 0 5.6M18 6.8a7.5 7.5 0 0 1 0 10.4"/>'),
+    mudo: traco(FALANTE + '<path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
+    pausa: traco('<path d="M8.5 6v12M15.5 6v12"/>'),
+    tocar: traco('<path fill="currentColor" stroke="none" d="M8 5.5v13l11-6.5z"/>'),
+  };
+  $("st-bolhas").innerHTML = STORIES.map((nome, i) => `<button type="button" class="st-bolha" aria-label="Ver o vídeo ${i + 1}: ${nome}"><span class="anel"><img src="stories/s${i + 1}.jpg" alt="" loading="lazy" width="70" height="70"></span><span class="nm">${nome}</span></button>`).join("");
+  $("st-barras").innerHTML = STORIES.map(() => "<span><i></i></span>").join("");
+  $("st-ouvir").innerHTML = I.som + "Toque para ouvir";
+  const bolhas = [...$("st-bolhas").children], fatias = [...$("st-barras").querySelectorAll("i")];
+  const vistos = new Set();
+  let atual = 0, mudo = true, comecou = false, pausado = false, fim = false, naTela = false;
+
+  function pintar() {
+    const parado = video.paused;
+    fone.classList.toggle("mudo", mudo); fone.classList.toggle("parado", parado); fone.classList.toggle("fim", fim);
+    $("st-nome").textContent = (atual + 1) + " de " + STORIES.length + " · " + STORIES[atual];
+    $("st-som").innerHTML = mudo ? I.mudo : I.som; $("st-som").setAttribute("aria-label", mudo ? "Ligar o som" : "Desligar o som");
+    $("st-pausa").innerHTML = parado ? I.tocar : I.pausa; $("st-pausa").setAttribute("aria-label", parado ? "Tocar" : "Pausar");
+    bolhas.forEach((b, i) => { b.classList.toggle("atual", i === atual && !fim); b.classList.toggle("vista", vistos.has(i)); });
+  }
+  function barras() {
+    const parte = video.duration ? Math.min(1, video.currentTime / video.duration) : 0;
+    fatias.forEach((f, i) => { f.style.transform = "scaleX(" + (fim || i < atual ? 1 : i === atual ? parte : 0) + ")"; });
+  }
+  (function quadro() { if (!video.paused) barras(); requestAnimationFrame(quadro); })();
+
+  // Sem um gesto da pessoa o navegador só deixa tocar sem som: se recusar, toca mudo.
+  function tocar() {
+    video.muted = mudo;
+    const p = video.play();
+    if (p) p.catch(() => { if (!mudo) { mudo = true; video.muted = true; video.play().catch(() => {}); } pintar(); });
+  }
+  function abrir(i, comSom) {
+    if (comSom) mudo = false;
+    atual = i; fim = false; pausado = false; comecou = true;
+    video.poster = "stories/s" + (i + 1) + ".jpg"; video.src = "stories/s" + (i + 1) + ".mp4";
+    barras(); tocar(); pintar();
+  }
+  function ir(passo) {
+    if (fim) return passo < 0 ? abrir(STORIES.length - 1) : abrir(0);
+    if (!comecou) return abrir(0, true);
+    const novo = atual + passo;
+    if (novo < 0) { video.currentTime = 0; pausado = false; return tocar(); }
+    vistos.add(atual);
+    if (novo >= STORIES.length) { fim = true; video.pause(); barras(); return pintar(); }
+    abrir(novo);
+  }
+  function alternarPausa() {
+    if (fim) return abrir(0);
+    if (!comecou) return abrir(0, true);
+    pausado = !video.paused;
+    pausado ? video.pause() : tocar();
+  }
+  function alternarSom() { mudo = !mudo; video.muted = mudo; pintar(); }
+
+  video.addEventListener("ended", () => ir(1));
+  video.addEventListener("play", pintar); video.addEventListener("pause", pintar);
+  bolhas.forEach((b, i) => b.addEventListener("click", () => { abrir(i, true); fone.scrollIntoView({ block: "nearest", behavior: calmo ? "auto" : "smooth" }); }));
+  $("st-ant").addEventListener("click", () => ir(-1));
+  $("st-prox").addEventListener("click", () => ir(1));
+  $("st-pausa").addEventListener("click", alternarPausa);
+  $("st-som").addEventListener("click", alternarSom);
+  $("st-ouvir").addEventListener("click", () => { mudo = false; video.currentTime = 0; pausado = false; tocar(); pintar(); });
+  $("st-denovo").addEventListener("click", () => abrir(0));
+
+  // Toque curto troca de vídeo (o terço da esquerda volta); segurar pausa enquanto o dedo está lá.
+  let espera = 0, segurou = false;
+  toque.addEventListener("pointerdown", (e) => {
+    if (e.button) return;
+    segurou = false; clearTimeout(espera);
+    espera = setTimeout(() => { if (comecou && !pausado && !video.paused) { segurou = true; video.pause(); } }, 230);
+  });
+  const soltar = () => { clearTimeout(espera); if (segurou && !pausado && naTela) tocar(); };
+  toque.addEventListener("pointerup", soltar); toque.addEventListener("pointercancel", soltar); toque.addEventListener("pointerleave", soltar);
+  toque.addEventListener("contextmenu", (e) => e.preventDefault());
+  toque.addEventListener("click", (e) => {
+    if (segurou) { segurou = false; return; }
+    if (!comecou || pausado) return alternarPausa();
+    const caixa = toque.getBoundingClientRect();
+    ir(e.clientX - caixa.left < caixa.width * .32 ? -1 : 1);
+  });
+  fone.addEventListener("keydown", (e) => {
+    if (e.target !== fone) return;
+    if (e.key === "ArrowRight") ir(1);
+    else if (e.key === "ArrowLeft") ir(-1);
+    else if (e.key === " " || e.key === "k") alternarPausa();
+    else if (e.key === "m") alternarSom();
+    else return;
+    e.preventDefault();
+  });
+
+  // Começa sozinho (sem som) quando aparece, e para quando sai da tela ou a aba fica em segundo plano.
+  const retomar = () => { if (comecou && !pausado && !fim && naTela && !document.hidden) tocar(); };
+  new IntersectionObserver(([e]) => {
+    naTela = e.isIntersecting;
+    if (!naTela) return video.pause();
+    if (!comecou && !calmo) abrir(0); else retomar();
+  }, { threshold: .55 }).observe(fone);
+  document.addEventListener("visibilitychange", () => { document.hidden ? video.pause() : retomar(); });
+  pintar();
+})();
 
 // ---------- a demonstração do topo ----------
 const TOTAL = 1307, GIGAS = 212;
