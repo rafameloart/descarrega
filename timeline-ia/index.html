@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prompt grátis · organize a timeline com IA</title>
-<meta name="description" content="O prompt que eu uso para a IA organizar a timeline do projeto antes de editar. Grátis: é só deixar seu melhor e-mail.">
+<title>Prompt grátis · bruto de casamento organizado com IA no DaVinci</title>
+<meta name="description" content="O prompt que eu uso para a IA montar o bruto do casamento no DaVinci Resolve: em ordem, sincronizado e com cada momento na sua cor. Grátis.">
 <meta name="theme-color" content="#0a0a0c">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:title" content="Prompt grátis · organize a timeline com IA">
-<meta property="og:description" content="O prompt que eu uso para a IA organizar a timeline antes de editar. Grátis.">
+<meta property="og:title" content="Prompt grátis · bruto de casamento organizado com IA no DaVinci">
+<meta property="og:description" content="A IA monta o bruto do casamento no DaVinci: em ordem, sincronizado e colorido por momento. Grátis.">
 <meta property="og:url" content="https://rafameloart.github.io/descarrega/timeline-ia/">
 <style>
 @font-face { font-family: "Chivo Mono"; src: url("../ChivoMono.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
@@ -32,6 +32,7 @@ h1 em { font-style: normal; color: var(--meio); }
 .sub { font-size: 18px; line-height: 1.55; color: var(--meio); margin: 0 0 28px; max-width: 520px; }
 .lista { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .lista li { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; line-height: 1.5; color: #c9c8d3; }
+.requisito { font-family: var(--mono); font-size: 12px; line-height: 1.6; color: var(--fraco); margin: 20px 0 0; max-width: 520px; }
 .lista li::before { content: ""; flex: none; width: 8px; height: 8px; margin-top: 8px; background: var(--acento); }
 
 /* Timeline de mentira: clipes bagunçados que se organizam */
@@ -81,16 +82,18 @@ footer a { color: var(--meio); text-decoration: none; }
 <body>
 <main>
   <section>
-    <p class="rotulo">Grátis · para editores</p>
+    <p class="rotulo">Grátis · DaVinci Resolve</p>
     <h1>A IA organiza a timeline. <em>Você só edita.</em></h1>
-    <p class="sub">O prompt que eu uso para separar, nomear e ordenar o material antes de começar a cortar. Copia, cola e pronto.</p>
+    <p class="sub">O prompt que eu uso para a IA montar o bruto do casamento inteiro numa timeline só, antes de eu começar a cortar. Cola, responde três perguntas e ela faz o resto.</p>
     <ul class="lista">
-      <li>Bins e clipes nomeados por cena, câmera e momento, sem arrastar um por um.</li>
-      <li>Funciona com o material de casamento, evento ou vídeo de marca.</li>
-      <li>Serve para DaVinci, Premiere e Final Cut.</li>
+      <li>Todos os clipes em ordem de horário, uma trilha por cinegrafista.</li>
+      <li>Cerimônia sincronizada em multicâmera pelo áudio do gravador.</li>
+      <li>Cada momento com sua cor (making of, cerimônia, ensaio, festa) e um marcador em cada troca.</li>
+      <li>Takes verticais já endireitados.</li>
     </ul>
+    <p class="requisito">Precisa do DaVinci Resolve Studio e de uma IA que roda no seu computador, como Claude Code ou Codex.</p>
     <div class="tl" aria-hidden="true">
-      <div class="tl-topo"><span>TIMELINE 01</span><b id="tl-estado">bagunçada</b></div>
+      <div class="tl-topo"><span>BRUTO COMPLETO</span><b id="tl-estado">bagunçada</b></div>
       <div class="trilha" id="trilhas"></div>
     </div>
   </section>
